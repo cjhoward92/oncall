@@ -2,6 +2,10 @@ import express, { NextFunction, Request, Response } from 'express';
 import AWS, { DynamoDBStreams } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 
+import makeLogger from './logger';
+
+const logger = makeLogger(module);
+
 export interface Contact {
   id: string;
   name: string;
@@ -31,6 +35,7 @@ const validateContact = (maybeContact: Partial<Contact>): string[] => {
 const router = express.Router();
 
 router.get('/', (_: Request, res: Response, next: NextFunction): void => {
+  logger.info('Getting all contacts');
   const processAsync = async (): Promise<Contact[]> => {
     const contacts: Contact[] = [];
     let evalKey: AWS.DynamoDB.Key | undefined = undefined;
@@ -48,6 +53,7 @@ router.get('/', (_: Request, res: Response, next: NextFunction): void => {
 
     } while (evalKey);
 
+    logger.info('Returned %d contacts', contacts.length);
     return contacts;
   };
 
@@ -56,6 +62,7 @@ router.get('/', (_: Request, res: Response, next: NextFunction): void => {
       res.json({
         contacts,
       });
+      logger.info('Returned contacts');
     })
     .catch(next);
 });
