@@ -10,7 +10,8 @@ module.exports = {
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
   ],
   rules: {
-    semi: ['error', 'always']
+    semi: ['error', 'always'],
+    '@typescript-eslint/no-unused-vars': 'off'
   },
   parserOptions: {
     tsconfigRootDir: __dirname,

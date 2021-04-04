@@ -22,8 +22,6 @@ if (runLocal) {
 }
 
 const server = createServer(app);
-
-/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */
-exports.handler = (event: APIGatewayProxyEvent, context: Context) => {
+export const handler = (event: APIGatewayProxyEvent, context: Context): void => {
   proxy(server, event, context);
 };
