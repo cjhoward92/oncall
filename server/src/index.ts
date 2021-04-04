@@ -2,15 +2,20 @@ import express from 'express';
 import { createServer, proxy } from 'aws-serverless-express';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
+import contactsRouter from './contacts';
+import { errorHandler } from './error';
+
 const app = express();
 
 app.use(express.json());
 // TODO: add CORS
 
-app.get('/', (req, res) => {
-  console.log('Received request to', req.path);
+app.use('/contacts', contactsRouter);
+
+app.get('/', (_, res) => {
   res.json({ message: 'hello' });
 });
+app.use(errorHandler);
 
 const runLocal = process.env.RUN_LOCAL || false;
 
