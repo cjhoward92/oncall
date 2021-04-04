@@ -4,10 +4,8 @@ ul {
   padding: 0;
   width: 100%;
   background-color: #8842d5;
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
+  display: inline-block;
+  height: 50px;
 }
 
 li {
@@ -17,7 +15,7 @@ li {
 li a {
   display: block;
   color: white;
-  padding: 9px 17px;
+  padding: 14px 17px;
   text-decoration: none;
 }
 
