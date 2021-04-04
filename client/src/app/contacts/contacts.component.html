@@ -1,1 +1,19 @@
-<p>contacts works!</p>
+<h2>Contacts</h2>
+
+<ul class="contact-list">
+  <li
+    *ngFor="let contact of contacts"
+    (click)="onSelectContact(contact)"
+    [class.selected]="contact === selectedContact"
+  >
+    <span>{{contact.name}} {{contact.phoneNumber | phone}}</span>
+  </li>
+</ul>
+
+<div *ngIf="selectedContact">
+  <label for="name">Contact name: </label>
+  <input id="name" [(ngModel)]="selectedContact.name" placeholder="name"/>
+  <br/>
+  <label for="phone">Phone number: </label>
+  <input id="phone" [(ngModel)]="selectedContact.phoneNumber" type="tel" appPhoneMask/>
+</div>

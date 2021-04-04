@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Contact, CONTACTS } from './contact';
+
 @Component({
   selector: 'app-contacts',
   templateUrl: './contacts.component.html',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ContactsComponent implements OnInit {
 
+  contacts = CONTACTS;
+
+  selectedContact?: Contact;
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  onSelectContact(contact: Contact): void {
+    this.selectedContact = contact;
   }
 
 }
