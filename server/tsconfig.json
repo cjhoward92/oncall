@@ -12,7 +12,9 @@
     "noUnusedParameters": false
   },
   "include": [
-    "./src/**/*.ts",
-    "./node_modules/@types/node/index.d.ts"
+    "**/src/**/*.ts",
+    "**/node_modules/@types/node/index.d.ts",
+    "**/__mocks__/**/*.ts",
+    "**/test/**/*.ts"
   ],
 }

@@ -11,3 +11,4 @@ coverage
 
 .eslintrc.js
 jest.config.js
+__mocks__

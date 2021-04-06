@@ -20,5 +20,8 @@ module.exports = {
   rootDir: '.',
   testMatch: [
     '**/test/**/*.test.ts'
-  ]
+  ],
+  globals: {
+    RUN_LOCAL: true,
+  }
 };

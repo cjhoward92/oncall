@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import AWS, { DynamoDBStreams } from 'aws-sdk';
+import AWS from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 
 import makeLogger from './logger';
@@ -12,7 +12,7 @@ export interface Contact {
   phoneNumber: string;
 }
 
-const TABLE_NAME = 'OncallContacts';
+export const CONTACTS_TABLE_NAME = 'OncallContacts';
 
 const ddbConverter = AWS.DynamoDB.Converter;
 const dynamo = new AWS.DynamoDB({
@@ -32,16 +32,14 @@ const validateContact = (maybeContact: Partial<Contact>): string[] => {
   return errors;
 };
 
-const router = express.Router();
-
-router.get('/', (_: Request, res: Response, next: NextFunction): void => {
+export const getContacts = (_: Request, res: Response, next: NextFunction): void => {
   logger.info('Getting all contacts');
   const processAsync = async (): Promise<Contact[]> => {
     const contacts: Contact[] = [];
     let evalKey: AWS.DynamoDB.Key | undefined = undefined;
     do {
       const contactResponse = await dynamo.scan({
-        TableName: TABLE_NAME,
+        TableName: CONTACTS_TABLE_NAME,
         ExclusiveStartKey: evalKey,
       }).promise() as AWS.DynamoDB.ScanOutput;
       evalKey = contactResponse.LastEvaluatedKey;
@@ -65,14 +63,14 @@ router.get('/', (_: Request, res: Response, next: NextFunction): void => {
       logger.info('Returned contacts');
     })
     .catch(next);
-});
+};
 
-router.post('/', (req: Request, res: Response, next: NextFunction): void => {
+export const createContact = (req: Request, res: Response, next: NextFunction): void => {
   const processAsync = async (contact: Contact): Promise<void> => {
     const dynamoItem = ddbConverter.marshall(contact);
     const ddbRes = await dynamo.putItem({
       Item: dynamoItem,
-      TableName: TABLE_NAME,
+      TableName: CONTACTS_TABLE_NAME,
       ReturnValues: 'NONE',
     }).promise() as AWS.DynamoDB.PutItemOutput;
     res.json(contact);
@@ -91,9 +89,9 @@ router.post('/', (req: Request, res: Response, next: NextFunction): void => {
 
   processAsync(contact)
     .catch(next);
-});
+};
 
-router.put('/:id', (req, res, next) => {
+export const updateContact = (req: Request, res: Response, next: NextFunction): void => {
   const processAsync = async (contact: Contact) => {
     await dynamo.updateItem({
       Key: {
@@ -101,7 +99,7 @@ router.put('/:id', (req, res, next) => {
           S: contact.id,
         }
       },
-      TableName: TABLE_NAME,
+      TableName: CONTACTS_TABLE_NAME,
       ReturnValues: 'NONE',
       ExpressionAttributeNames: {
         '#n': 'name',
@@ -135,9 +133,9 @@ router.put('/:id', (req, res, next) => {
 
   processAsync(contact)
     .catch(next);
-});
+};
 
-router.delete('/:id', (req, res, next) => {
+export const deleteContact = (req: Request, res: Response, next: NextFunction): void => {
   const processAsync = async () => {
     await dynamo.deleteItem({
       Key: {
@@ -145,7 +143,7 @@ router.delete('/:id', (req, res, next) => {
           S: req.params.id,
         }
       },
-      TableName: TABLE_NAME,
+      TableName: CONTACTS_TABLE_NAME,
       ReturnValues: 'NONE',
     }).promise();
     res.sendStatus(204);
@@ -153,6 +151,12 @@ router.delete('/:id', (req, res, next) => {
 
   processAsync()
     .catch(next);
-});
+};
 
+// TODO: We should separate the controller functions from express
+const router = express.Router();
+router.get('/', getContacts);
+router.post('/', createContact);
+router.put('/:id', updateContact);
+router.delete('/:id', deleteContact);
 export default router;
