@@ -5,6 +5,7 @@
     *ngFor="let contact of contacts"
     (click)="onSelectContact(contact)"
     [class.selected]="contact === selectedContact"
+    class="contact"
   >
     <span>{{contact.name}} {{contact.phoneNumber | phone}}</span>
   </li>
@@ -16,4 +17,5 @@
   <br/>
   <label for="phone">Phone number: </label>
   <input id="phone" [(ngModel)]="selectedContact.phoneNumber" type="tel" appPhoneMask/>
+  <button type="submit" (click)="onUpdateContactClick(selectedContact)">Save</button>
 </div>

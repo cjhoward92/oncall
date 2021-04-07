@@ -1,14 +1,17 @@
 import express from 'express';
+import cors from 'cors';
 import { createServer, proxy } from 'aws-serverless-express';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
 import contactsRouter from './contacts';
 import { errorHandler } from './error';
 
+const runLocal = process.env.RUN_LOCAL || false;
+
 const app = express();
 
+app.use(cors());
 app.use(express.json());
-// TODO: add CORS
 
 app.use('/contacts', contactsRouter);
 
@@ -16,8 +19,6 @@ app.get('/', (_, res) => {
   res.json({ message: 'hello' });
 });
 app.use(errorHandler);
-
-const runLocal = process.env.RUN_LOCAL || false;
 
 if (runLocal) {
   const port = process.env.PORT || 8080;

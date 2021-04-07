@@ -66,6 +66,7 @@ export const getContacts = (_: Request, res: Response, next: NextFunction): void
 };
 
 export const createContact = (req: Request, res: Response, next: NextFunction): void => {
+  logger.info('Creating a contact');
   const processAsync = async (contact: Contact): Promise<void> => {
     const dynamoItem = ddbConverter.marshall(contact);
     const ddbRes = await dynamo.putItem({
@@ -73,11 +74,13 @@ export const createContact = (req: Request, res: Response, next: NextFunction): 
       TableName: CONTACTS_TABLE_NAME,
       ReturnValues: 'NONE',
     }).promise() as AWS.DynamoDB.PutItemOutput;
+    logger.info('Created contact with id %s', contact.id);
     res.json(contact);
   };
 
   const maybeErrors = validateContact(req.body as Partial<Contact>);
   if (maybeErrors.length) {
+    logger.warn('There were validation errors; %s', maybeErrors.join(', '));
     res.status(400).json({
       errors: maybeErrors,
     });
@@ -92,6 +95,7 @@ export const createContact = (req: Request, res: Response, next: NextFunction): 
 };
 
 export const updateContact = (req: Request, res: Response, next: NextFunction): void => {
+  logger.info('Updating contact %s', req.params.id);
   const processAsync = async (contact: Contact) => {
     await dynamo.updateItem({
       Key: {
@@ -115,6 +119,7 @@ export const updateContact = (req: Request, res: Response, next: NextFunction): 
       },
       UpdateExpression: 'SET #n = :n, #p = :p',
     }).promise();
+    logger.info('Contact successfully updated');
     res.sendStatus(204);
   };
 
@@ -124,6 +129,7 @@ export const updateContact = (req: Request, res: Response, next: NextFunction): 
     maybeErrors.push('A contact must have an id');
   }
   if (maybeErrors.length) {
+    logger.warn('There were validation errors: %s', maybeErrors.join(', '));
     res.status(400).json({
       errors: maybeErrors,
     });
@@ -136,6 +142,7 @@ export const updateContact = (req: Request, res: Response, next: NextFunction): 
 };
 
 export const deleteContact = (req: Request, res: Response, next: NextFunction): void => {
+  logger.info('Deleting contact with id %s', req.params.id);
   const processAsync = async () => {
     await dynamo.deleteItem({
       Key: {
@@ -146,6 +153,7 @@ export const deleteContact = (req: Request, res: Response, next: NextFunction): 
       TableName: CONTACTS_TABLE_NAME,
       ReturnValues: 'NONE',
     }).promise();
+    logger.info('Contact deleted');
     res.sendStatus(204);
   };
 
