@@ -1,21 +1,24 @@
 <h2>Contacts</h2>
 
+<button type="submit" (click)="onCreateNew()">Create New</button>
+<br/>
+
 <ul class="contact-list">
   <li
     *ngFor="let contact of contacts"
-    (click)="onSelectContact(contact)"
     [class.selected]="contact === selectedContact"
     class="contact"
   >
-    <span>{{contact.name}} {{contact.phoneNumber | phone}}</span>
+    <span (click)="onSelectContact(contact)">{{contact.name}} {{contact.phoneNumber | phone}}</span>
+    <button type="submit" (click)="onDeleteContact(contact)">Delete</button>
   </li>
 </ul>
 
-<div *ngIf="selectedContact">
-  <label for="name">Contact name: </label>
-  <input id="name" [(ngModel)]="selectedContact.name" placeholder="name"/>
-  <br/>
-  <label for="phone">Phone number: </label>
-  <input id="phone" [(ngModel)]="selectedContact.phoneNumber" type="tel" appPhoneMask/>
-  <button type="submit" (click)="onUpdateContactClick(selectedContact)">Save</button>
+<div *ngIf="createNew">
+  <app-create-contact (created)="onContactsChanged()"></app-create-contact>
 </div>
+
+<app-update-contact
+  [selectedContact]="selectedContact"
+  (updated)="onContactsChanged()">
+</app-update-contact>

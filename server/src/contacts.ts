@@ -32,6 +32,7 @@ const validateContact = (maybeContact: Partial<Contact>): string[] => {
   return errors;
 };
 
+// TODO: Refactor ddb into a service layer.
 export const getContacts = (_: Request, res: Response, next: NextFunction): void => {
   logger.info('Getting all contacts');
   const processAsync = async (): Promise<Contact[]> => {

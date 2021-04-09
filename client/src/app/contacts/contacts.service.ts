@@ -24,4 +24,16 @@ export class ContactsService {
       observe: 'response',
     });
   }
+
+  public createContact(contact: Contact): Observable<HttpResponse<any>> {
+    return this.http.post(`${environment.apiUrl}contacts`, contact, {
+      observe: 'response',
+    });
+  }
+
+  public deleteContact(id: string): Observable<HttpResponse<any>> {
+    return this.http.delete(`${environment.apiUrl}contacts/${id}`, {
+      observe: 'response',
+    });
+  }
 }

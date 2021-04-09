@@ -9,6 +9,8 @@ import { ContactsComponent } from './contacts/contacts.component';
 import { NavComponent } from './nav/nav.component';
 import { PhonePipe } from './phone.pipe';
 import { PhoneMaskDirective } from './phone-mask.directive';
+import { UpdateContactComponent } from './contacts/update-contact/update-contact.component';
+import { CreateContactComponent } from './contacts/create-contact/create-contact.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { PhoneMaskDirective } from './phone-mask.directive';
     ContactsComponent,
     NavComponent,
     PhonePipe,
-    PhoneMaskDirective
+    PhoneMaskDirective,
+    UpdateContactComponent,
+    CreateContactComponent
   ],
   imports: [
     BrowserModule,

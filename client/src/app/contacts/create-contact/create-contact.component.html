@@ -1,0 +1,9 @@
+<h3>Create Contact</h3>
+
+<label for="name">Contact name: </label>
+<input id="name" [(ngModel)]="newContact.name"/>
+<br/>
+<label for="phone">Phone number: </label>
+<input id="phone" [(ngModel)]="newContact.phoneNumber" type="tel" appPhoneMask/>
+<br/>
+<button type="submit" (click)="onCreateContactClick(newContact)">Save</button>
